@@ -250,7 +250,7 @@ var  ZZ         aZZ       =
  array.new < int    >(maxSize,  0), 
  array.new < int    >(maxSize,  0), 
  array.new < float  >(maxSize, na),
- array.new < bool   >(maxSize, na))
+ array.new < bool   >(maxSize, false))
 
 var line _diag = line.new(na, na, na, na, color=color.new(color.silver, 50), style=line.style_dashed, xloc= xloc            )
 var line _vert = line.new(na, na, na, na, color=color.new(color.silver, 50), style=line.style_dotted, xloc= xloc            )
@@ -354,7 +354,7 @@ draw(left, col) =>
     x2      := bar_index -1
     ph       = ta.pivothigh(hi, left, 1)
     pl       = ta.pivotlow (lo, left, 1)
-    if ph   
+    if not na(ph)
         dir := aZZ.d.get (0) 
         x1  := aZZ.x.get (0) 
         y1  := aZZ.y.get (0) 
@@ -410,7 +410,7 @@ draw(left, col) =>
                     getLast.bx.delete()
                     getLast.ln.delete()               
     //
-    if pl
+    if not na(pl)
         dir := aZZ.d.get (0) 
         x1  := aZZ.x.get (0) 
         y1  := aZZ.y.get (0) 
@@ -539,10 +539,10 @@ if MSS.l_bosBr.size() > 200
     MSS.lbBosBr.pop().delete()
 
 //Killzones 
-ny          = time(timeframe.period, input.session('0700-0900', '', inline = 'ny', group = 'Killzones'), 'America/New_York') and showNy 
-ldn_open    = time(timeframe.period, input.session('0700-1000', '', inline = 'lo', group = 'Killzones'), 'Europe/London'   ) and showLdno // 0200-0500 UTC-5
-ldn_close   = time(timeframe.period, input.session('1500-1700', '', inline = 'lc', group = 'Killzones'), 'Europe/London'   ) and showLdnc // 1000-1200 UTC-5
-asian       = time(timeframe.period, input.session('1000-1400', '', inline = 'as', group = 'Killzones'), 'Asia/Tokyo'      ) and showAsia // 2000-0000 UTC-5
+ny          = not na(time(timeframe.period, input.session('0700-0900', '', inline = 'ny', group = 'Killzones'), 'America/New_York')) and showNy
+ldn_open    = not na(time(timeframe.period, input.session('0700-1000', '', inline = 'lo', group = 'Killzones'), 'Europe/London'   )) and showLdno // 0200-0500 UTC-5
+ldn_close   = not na(time(timeframe.period, input.session('1500-1700', '', inline = 'lc', group = 'Killzones'), 'Europe/London'   )) and showLdnc // 1000-1200 UTC-5
+asian       = not na(time(timeframe.period, input.session('1000-1400', '', inline = 'as', group = 'Killzones'), 'Asia/Tokyo'      )) and showAsia // 2000-0000 UTC-5
 
 //Pivotpoints 
 ph          = ta.pivothigh(3, 1), lPh = fixnan(ph)
@@ -782,7 +782,7 @@ if barstate.isfirst
 if dayofweek == dayofweek.friday
     friCp := close, friCi := n
 
-if ta.change(dayofweek) 
+if ta.change(dayofweek) != 0
     if  dayofweek == dayofweek.monday and iNWOG
         monOp := open , monOi := n
         bl_NWOG.unshift(bx_ln.new(   
@@ -1897,7 +1897,7 @@ showSess  = input.bool(true, "Show Session Lines",        group=grpVis)
 // ═══════════════════════════════════════════════════
 // 2. CORE INDICATORS
 // ═══════════════════════════════════════════════════
-trendAtr   = ta.trendAtr(atrLen)
+trendAtr   = ta.atr(atrLen)
 [_dp, _dm, adx] = ta.dmi(14, 14)
 ema9  = ta.ema(close, 9)
 ema21 = ta.ema(close, 21)
